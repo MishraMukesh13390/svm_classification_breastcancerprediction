@@ -1,18 +1,10 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Sep 30 13:34:18 2023
-
-@author: ADMIN
-"""
-!pip install streamlit
-import streamlit as st
-import pandas as pd
-import numpy as np
 import pickle
+import streamlit as st
+import numpy as np
 from sklearn.preprocessing import StandardScaler
 
 # Load the SVM model
-with open('G:/360digitmg/PROJECT WORK/Mukesh Mishra/breast cancer model/svm_model.pickle', 'rb') as model_file:
+with open('svm_model.pickle', 'rb') as model_file:
     svm_model = pickle.load(model_file)
 
 # Streamlit app header
@@ -21,15 +13,17 @@ st.title('Breast Cancer Classification')
 # Sidebar with user input
 st.sidebar.header('User Input')
 
-# Create input fields for features
-feature1 = st.sidebar.slider('Feature 1', min_value=0.0, max_value=10.0, value=5.0)
-feature2 = st.sidebar.slider('Feature 2', min_value=0.0, max_value=10.0, value=5.0)
-# Add more feature sliders as needed
+# Create input fields for all the features used in the model
+features = []
+for i in range(31):
+    feature = st.sidebar.slider(
+        f'Feature {i + 1}', min_value=0.0, max_value=10.0, value=5.0)
+    features.append(feature)
 
 # Create a button to make predictions
 if st.sidebar.button('Predict'):
     # Preprocess the user input (standardization)
-    user_input = np.array([[feature1, feature2]])  # Add more features as needed
+    user_input = np.array([features])
     scaler = StandardScaler()
     user_input_scaled = scaler.fit_transform(user_input)
 
@@ -41,5 +35,3 @@ if st.sidebar.button('Predict'):
         st.sidebar.success('Prediction: Benign (B)')
     else:
         st.sidebar.error('Prediction: Malignant (M)')
-
-# Add more content to your Streamlit app as needed
